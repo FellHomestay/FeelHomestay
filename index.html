@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feel Homestay - Nơi dừng chân lý tưởng</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Lớp nền ảnh */
+        .background-blur {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url('hình ảnh.png.PNG');
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px) brightness(0.6); 
+            z-index: -1;
+        }
+
+        /* Khung chứa nội dung */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Khung giới thiệu */
+        .intro-box {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .intro-box h2 {
+            color: #b58055;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .intro-box p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+        .intro-box ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .intro-box li {
+            margin-bottom: 8px;
+        }
+        .intro-box strong {
+            color: #d35400;
+        }
+
+        /* Nút kêu gọi hành động */
+        .btn-main {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto 0;
+            padding: 15px;
+            background-color: #b58055;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(181, 128, 85, 0.4);
+        }
+        .btn-main:hover {
+            background-color: #8e623f;
+            transform: translateY(-2px);
+        }
+
+        /* Khung Form đặt phòng (Ban đầu ẩn đi) */
+        .booking-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px;
+            display: none; /* Ẩn đi chờ click */
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .booking-card.show {
+            display: block;
+        }
+        .booking-card h3 {
+            text-align: center;
+            color: #b58055;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+        
+        /* Chỉnh sửa các ô điền thông tin */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: calc(50% - 15px); /* Chia 2 cột */
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full-width {
+            min-width: 100%; /* Dòng chiếm toàn bộ chiều ngang */
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        .form-group select, .form-group input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            background: #fff;
+        }
+        .form-group select:focus, .form-group input:focus {
+            border-color: #b58055;
+        }
+
+        /* Ẩn các khu vực không cần thiết */
+        .hidden-district {
+            display: none;
+        }
+
+        /* Nút Zalo góc dưới cùng */
+        .zalo-floating {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #0068FF;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(0, 104, 255, 0.4);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+        .zalo-floating:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Reponsive cho điện thoại */
+        @media (max-width: 600px) {
+            .form-group {
+                min-width: 100%;
+            }
+            .zalo-floating {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-blur"></div>
+
+    <div class="content-wrapper">
+        
+        <div class="intro-box">
+            <h2>🌿 FEEL HOMESTAY – Nơi dừng chân lý tưởng cho mọi hành trình 🌿</h2>
+            <p>Bạn đang tìm một không gian nghỉ ngơi sạch sẽ, yên tĩnh và đầy đủ tiện nghi? Feel Homestay chính là lựa chọn hoàn hảo dành cho bạn!</p>
+            <p>Với không gian ấm cúng, thiết kế hiện đại, phòng nghỉ luôn được vệ sinh sạch sẽ cùng đầy đủ tiện ích, Feel Homestay mang đến cảm giác thoải mái như đang ở chính ngôi nhà của mình. Dù bạn đi du lịch, công tác hay cần một nơi nghỉ ngơi thư giãn, chúng tôi luôn sẵn sàng mang đến cho bạn trải nghiệm đáng nhớ với mức giá hợp lý và dịch vụ tận tâm.</p>
+            <p>✨ <strong>Lý do bạn nên chọn Feel Homestay:</strong></p>
+            <ul>
+                <li>Phòng sạch đẹp, thoáng mát, đầy đủ tiện nghi.</li>
+                <li>Không gian yên tĩnh, phù hợp nghỉ dưỡng và làm việc.</li>
+                <li>Hỗ trợ khách hàng nhiệt tình, chu đáo.</li>
+                <li>Giá cả hợp lý, nhiều ưu đãi hấp dẫn khi đặt sớm.</li>
+            </ul>
+            <p>📞 Đặt phòng ngay hôm nay qua Hotline/Zalo: <strong>0828 222 534</strong> để giữ phòng đẹp và nhận những ưu đãi hấp dẫn. Đừng chần chừ, hãy để Feel Homestay – Nơi dừng chân lý tưởng đồng hành cùng bạn trong mỗi chuyến đi. Chúng tôi rất hân hạnh được chào đón và phục vụ bạn!</p>
+            
+            <button id="showFormBtn" class="btn-main">ĐẶT PHÒNG TẠI ĐÂY</button>
+        </div>
+
+        <div id="bookingForm" class="booking-card">
+            <h3>ĐIỀN THÔNG TIN ĐẶT PHÒNG</h3>
+            <form onsubmit="event.preventDefault(); alert('Cảm ơn bạn! Yêu cầu đặt phòng đã được gửi. Chúng tôi sẽ liên hệ qua Zalo/SĐT để xác nhận sớm nhất.');">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📍 Chọn thành phố</label>
+                        <select id="citySelect" required>
+                            <option value="">-- Vui lòng chọn --</option>
+                            <option value="ha-noi">Hà Nội</option>
+                            <option value="ho-chi-minh">Hồ Chí Minh</option>
+                            <option value="nha-trang">Nha Trang</option>
+                            <option value="da-lat">Đà Lạt</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden-district" id="districtGroup">
+                        <label>📍 Chọn Quận/Khu vực</label>
+                        <select id="districtSelect">
+                            </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Ngày Check-in</label>
+                        <input type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Giờ Check-in dự kiến</label>
+                        <input type="time" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Ngày Check-out</label>
+                        <input type="date" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>👤 Họ và Tên</label>
+                        <input type="text" placeholder="Nhập tên của bạn" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📞 Số điện thoại / Zalo</label>
+                        <input type="tel" placeholder="Ví dụ: 0912345678" required>
+                    </div>
+                    <div class="form-group">
+                        <label>👥 Số người</label>
+                        <input type="number" min="1" placeholder="Số lượng người" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>🚪 Số phòng cần đặt</label>
+                        <input type="number" min="1" placeholder="Số lượng phòng" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-main" style="width: 100%; max-width: none;">GỬI THÔNG TIN</button>
+            </form>
+        </div>
+    </div>
+
+    <a href="https://zalo.me/0828222534" target="_blank" class="zalo-floating">
+        Chat Zalo
+    </a>
+
+    <script>
+        // Xử lý nút hiển thị Form đặt phòng
+        const showFormBtn = document.getElementById('showFormBtn');
+        const bookingForm = document.getElementById('bookingForm');
+
+        showFormBtn.addEventListener('click', function() {
+            bookingForm.classList.add('show');
+            // Tự động cuộn trang xuống chỗ Form
+            bookingForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Xử lý hiển thị Quận theo Thành phố
+        const citySelect = document.getElementById('citySelect');
+        const districtGroup = document.getElementById('districtGroup');
+        const districtSelect = document.getElementById('districtSelect');
+
+        // Dữ liệu các quận
+        const dataDistricts = {
+            'ha-noi': ['Thanh Xuân', 'Cầu Giấy', 'Tây Hồ', 'Phố Cổ', 'Đống Đa', 'Gia Lâm'],
+            'ho-chi-minh': ['Quận 1', 'Quận 3', 'Quận 5', 'Quận 7', 'Quận Tân Bình', 'Quận Bình Tân', 'Quận Tân Phú']
+        };
+
+        citySelect.addEventListener('change', function() {
+            const selectedCity = this.value;
+            
+            // Xóa các lựa chọn quận cũ
+            districtSelect.innerHTML = '';
+
+            // Nếu chọn HN hoặc HCM thì hiện ô chọn Quận
+            if (selectedCity === 'ha-noi' || selectedCity === 'ho-chi-minh') {
+                districtGroup.classList.remove('hidden-district');
+                
+                // Thêm các lựa chọn quận tương ứng
+                dataDistricts[selectedCity].forEach(function(district) {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            } else {
+                // Nếu chọn Nha Trang, Đà Lạt hoặc chưa chọn thì ẩn ô Quận đi
+                districtGroup.classList.add('hidden-district');
+            }
+        });
+    </script>
+</body>
+</html>
